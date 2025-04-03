@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:15
+    container_name: stock_market_db
+    environment:
+      POSTGRES_DB: stock.market
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Philips3420
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: stock_market_app
+    depends_on:
+      - database
+    environment:
+      SPRING_APPLICATION_NAME: StockMarket
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/stock.market
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Philips3420
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
